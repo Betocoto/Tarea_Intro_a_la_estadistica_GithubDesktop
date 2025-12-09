@@ -1,0 +1,302 @@
+\documentclass[a0paper,landscape]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish,es-tabla]{babel}
+\usepackage{geometry}
+\usepackage{multicol}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usepackage{tcolorbox}
+\usepackage{listings}
+\usepackage{enumitem}
+\usepackage{helvet}
+\renewcommand{\familydefault}{\sfdefault}
+
+% Configuración de página con márgenes reducidos
+\geometry{margin=0.5cm}
+
+% Colores personalizados
+\definecolor{azuloscuro}{RGB}{30,58,90}
+\definecolor{azulmedio}{RGB}{65,90,130}
+\definecolor{turquesa}{RGB}{85,147,159}
+\definecolor{beigesuave}{RGB}{240,235,220}
+
+% Configuración compacta de listings
+\lstset{
+	basicstyle=\ttfamily\tiny,
+	backgroundcolor=\color{beigesuave},
+	frame=single,
+	rulecolor=\color{azuloscuro},
+	breaklines=true,
+	keywordstyle=\color{blue}\bfseries,
+	commentstyle=\color{gray},
+	showstringspaces=false,
+	aboveskip=0.5mm,
+	belowskip=0.5mm
+}
+
+% Cajas compactas
+\tcbuselibrary{skins}
+\newtcolorbox{cajaazul}[1][]{
+	colback=azuloscuro,
+	colframe=azuloscuro,
+	fonttitle=\bfseries\huge\color{white},
+	coltitle=white,
+	coltext=white,
+	arc=2mm,
+	boxsep=2mm,
+	#1
+}
+
+\newtcolorbox{cajagrafico}[1][]{
+	colback=white,
+	colframe=azulmedio,
+	fonttitle=\bfseries\Large\color{azuloscuro},
+	arc=2mm,
+	boxsep=1mm,
+	left=1mm,
+	right=1mm,
+	top=1mm,
+	bottom=1mm,
+	#1
+}
+
+% Espaciado reducido
+\setlength{\parskip}{0.2mm}
+\setlength{\columnsep}{2mm}
+\setlength{\intextsep}{1mm}
+\setlength{\textfloatsep}{1mm}
+\setlength{\floatsep}{1mm}
+\setlength{\abovecaptionskip}{0pt}
+\setlength{\belowcaptionskip}{0pt}
+
+\begin{document}
+	\pagestyle{empty}
+	
+	% ENCABEZADO
+	\begin{cajaazul}[width=\textwidth]
+		\begin{center}
+			{\Huge\textbf{Gu\'ia Visual de Gr\'aficos Estad\'isticos en Python}}\\[2mm]
+			{\LARGE Trabajo Corto \#2: Gr\'aficos para Estad\'istica Descriptiva}\\[1mm]
+			{\Large Colegio Universitario de Cartago | Kendall Solano y Roberto Coto}\\
+			{\large Big Data - III Cuatrimestre 2025 | Prof. David Mart\'inez Salazar}
+		\end{center}
+	\end{cajaazul}
+	
+	\vspace{1mm}
+	
+	\begin{multicols}{2}
+		
+		% 1. BARRAS HORIZONTALES
+		\begin{cajagrafico}[title=1. Gr\'afico de Barras Horizontales]
+			\textbf{Definici\'on:} Barras horizontales donde la longitud representa el valor de cada categor\'ia.\\
+			\textbf{Cu\'ando usar:} Series cualitativas o geogr\'aficas con nombres largos.\\
+			\textbf{Ejemplo:} Top 10 universidades por diplomas emitidos (2014-2020)
+			\vspace{-1mm}
+			\begin{center}
+				\includegraphics[width=\linewidth,height=0.22\linewidth,keepaspectratio]{01_barras_horizontales.png}
+			\end{center}
+			\vspace{-2mm}
+			{\footnotesize\textit{Universidad de Costa Rica lidera con $>$40,000 diplomas}}
+			\vspace{1mm}
+			\begin{lstlisting}[language=Python]
+				universidades = df['UNIVERSIDAD'].value_counts().head(10)
+				universidades.sort_values().plot(kind='barh', color='#559f9f')
+				plt.title('Distribucion de Diplomas por Universidad')
+				plt.xlabel('Cantidad de Diplomas')
+				plt.savefig('01_barras_horizontales.png', dpi=300)
+			\end{lstlisting}
+		\end{cajagrafico}
+		
+		% 2. BARRAS VERTICALES
+		\begin{cajagrafico}[title=2. Gr\'afico de Barras Verticales]
+			\textbf{Definici\'on:} Barras que crecen verticalmente desde el eje horizontal.\\
+			\textbf{Cu\'ando usar:} Comparar categor\'ias discretas, especialmente datos temporales.\\
+			\textbf{Ejemplo:} Diplomas emitidos por a\~no (2014-2020)
+			\vspace{-1mm}
+			\begin{center}
+				\includegraphics[width=\linewidth,height=0.22\linewidth,keepaspectratio]{02_barras_verticales.png}
+			\end{center}
+			\vspace{-2mm}
+			{\footnotesize\textit{Pico en 2015 (49,500), ca\'ida en 2020 (41,900)}}
+			\vspace{1mm}
+			\begin{lstlisting}[language=Python]
+				df['ANO'].value_counts().sort_index().plot(kind='bar', color='#304b72')
+				plt.title('Cantidad de Diplomas Emitidos por Anio')
+				plt.xlabel('Anio'); plt.ylabel('Cantidad')
+				plt.savefig('02_barras_verticales.png', dpi=300)
+			\end{lstlisting}
+		\end{cajagrafico}
+		
+		% 3. BARRAS SIMPLES
+		\begin{cajagrafico}[title=3. Gr\'afico de Barras Simples]
+			\textbf{Definici\'on:} Representaci\'on b\'asica de frecuencias para una variable cualitativa.\\
+			\textbf{Cu\'ando usar:} Comparar categor\'ias mutuamente excluyentes.\\
+			\textbf{Ejemplo:} Distribuci\'on de diplomas por sexo
+			\vspace{-1mm}
+			\begin{center}
+				\includegraphics[width=\linewidth,height=0.20\linewidth,keepaspectratio]{03_barras_simples.png}
+			\end{center}
+			\vspace{-2mm}
+			{\footnotesize\textit{Mujeres: 62\% (204,000) | Hombres: 38\% (121,000)}}
+			\vspace{1mm}
+			\begin{lstlisting}[language=Python]
+				df['SEXO'].value_counts().plot(kind='bar',
+				color=['#304b72', '#559f9f'])
+				plt.title('Distribucion de Diplomas por Sexo')
+				plt.xlabel('Sexo')
+				plt.savefig('03_barras_simples.png', dpi=300)
+			\end{lstlisting}
+		\end{cajagrafico}
+		
+		% 4. BARRAS APILADAS
+		\begin{cajagrafico}[title=4. Gr\'afico de Barras Apiladas]
+			\textbf{Definici\'on:} Barras divididas en segmentos apilados que muestran composici\'on interna.\\
+			\textbf{Cu\'ando usar:} Comparar totales y ver composici\'on simult\'aneamente.\\
+			\textbf{Ejemplo:} Diplomas por a\~no diferenciando sexo (valores absolutos)
+			\vspace{-1mm}
+			\begin{center}
+				\includegraphics[width=\linewidth,height=0.22\linewidth,keepaspectratio]{04_barras_apiladas.png}
+			\end{center}
+			\vspace{-2mm}
+			{\footnotesize\textit{Dominancia femenina consistente en todos los a\~nos}}
+			\vspace{1mm}
+			\begin{lstlisting}[language=Python]
+				pd.crosstab(df['ANO'], df['SEXO']).plot(kind='bar',
+				stacked=True, color=['#304b72', '#559f9f'])
+				plt.title('Distribucion por Sexo y Anio (Apiladas)')
+				plt.savefig('04_barras_apiladas.png', dpi=300)
+			\end{lstlisting}
+		\end{cajagrafico}
+		
+		% 5. BARRAS AGRUPADAS
+		\begin{cajagrafico}[title=5. Gr\'afico de Barras Agrupadas]
+			\textbf{Definici\'on:} Barras lado a lado para comparaci\'on directa entre subcategor\'ias.\\
+			\textbf{Cu\'ando usar:} Comparar magnitudes absolutas entre grupos.\\
+			\textbf{Ejemplo:} Comparaci\'on directa hombres vs mujeres por a\~no
+			\vspace{-1mm}
+			\begin{center}
+				\includegraphics[width=\linewidth,height=0.20\linewidth,keepaspectratio]{05_barras_agrupadas.png}
+			\end{center}
+			\vspace{-2mm}
+			{\footnotesize\textit{Diferencia constante de $\sim$10,000 diplomas/a\~no}}
+			\vspace{1mm}
+			\begin{lstlisting}[language=Python]
+				pd.crosstab(df['ANO'], df['SEXO']).plot(kind='bar',
+				color=['#304b72', '#559f9f'])
+				plt.title('Comparacion de Diplomas por Sexo y Anio')
+				plt.savefig('05_barras_agrupadas.png', dpi=300)
+			\end{lstlisting}
+		\end{cajagrafico}
+		
+		% 6. PIRÁMIDE
+		\begin{cajagrafico}[title=6. Gr\'afico de Pir\'amide Poblacional]
+			\textbf{Definici\'on:} Barras horizontales bidireccionales que muestran dos grupos por intervalos.\\
+			\textbf{Cu\'ando usar:} An\'alisis demogr\'afico, estructura por edad y g\'enero.\\
+			\textbf{Ejemplo:} Distribuci\'on de diplomas por grupos de edad y sexo
+			\vspace{-1mm}
+			\begin{center}
+				\includegraphics[width=\linewidth,height=0.20\linewidth,keepaspectratio]{06_piramide_edad_sexo.png}
+			\end{center}
+			\vspace{-2mm}
+			{\footnotesize\textit{Mayor concentraci\'on: 20–30 a\~nos}}
+			\vspace{1mm}
+			\begin{lstlisting}[language=Python]
+				df['Grupo_Edad'] = pd.cut(df['EDAD'],
+				bins=[15,20,25,30,35,40,45,50,60])
+				piramide = df.groupby(['Grupo_Edad','SEXO'], 
+				observed=True).size().unstack()
+				plt.barh(categorias, -piramide['Hombre'], color='#304b72')
+				plt.barh(categorias, piramide['Mujer'], color='#559f9f')
+				plt.savefig('06_piramide_edad_sexo.png', dpi=300)
+			\end{lstlisting}
+		\end{cajagrafico}
+		
+		% 7. PASTEL
+		\begin{cajagrafico}[title=7. Gr\'afico de Pastel (Circular)]
+			\textbf{Definici\'on:} C\'irculo dividido en sectores proporcionales.\\
+			\textbf{Cu\'ando usar:} Mostrar composici\'on porcentual (2–5 categor\'ias).\\
+			\textbf{Ejemplo:} Proporci\'on diplomas sector estatal vs privado
+			\vspace{-1mm}
+			\begin{center}
+				\includegraphics[width=0.75\linewidth,height=0.20\linewidth,keepaspectratio]{07_pastel_sector.png}
+			\end{center}
+			\vspace{-2mm}
+			{\footnotesize\textit{Privado: 65.3\% | Estatal: 34.7\%}}
+			\vspace{1mm}
+			\begin{lstlisting}[language=Python]
+				df['SECTOR_UNIVERSITARIO'].value_counts().plot(kind='pie',
+				autopct='%1.1f%%', startangle=90, colors=['#304b72','#559f88'])
+				plt.title('Proporcion de Diplomas por Sector')
+				plt.savefig('07_pastel_sector.png', dpi=300)
+			\end{lstlisting}
+		\end{cajagrafico}
+		
+		% 8. BARRAS 100%
+		\begin{cajagrafico}[title=8. Gr\'afico de Barras 100\%]
+			\textbf{Definici\'on:} Barras normalizadas al 100\% mostrando proporciones relativas.\\
+			\textbf{Cu\'ando usar:} Comparar composiciones porcentuales.\\
+			\textbf{Ejemplo:} Evoluci\'on porcentual de g\'enero por a\~no
+			\vspace{-1mm}
+			\begin{center}
+				\includegraphics[width=\linewidth,height=0.20\linewidth,keepaspectratio]{08_barras_100porciento.png}
+			\end{center}
+			\vspace{-2mm}
+			{\footnotesize\textit{Proporci\'on estable: 62\% mujeres, 38\% hombres}}
+			\vspace{1mm}
+			\begin{lstlisting}[language=Python]
+				porcentaje = pd.crosstab(df['ANO'], df['SEXO'], normalize='index')*100
+				porcentaje.plot(kind='bar', stacked=True,
+				color=['#304b72','#559f9f'])
+				plt.title('Porcentaje de Diplomas por Sexo y Anio')
+				plt.savefig('08_barras_100porciento.png', dpi=300)
+			\end{lstlisting}
+		\end{cajagrafico}
+		
+		% 9. LINEAL
+		\begin{cajagrafico}[title=9. Gr\'afico Lineal]
+			\textbf{Definici\'on:} L\'inea continua que conecta puntos mostrando tendencias.\\
+			\textbf{Cu\'ando usar:} Series temporales o patrones de cambio.\\
+			\textbf{Ejemplo:} Tendencia de diplomas emitidos anualmente
+			\vspace{-1mm}
+			\begin{center}
+				\includegraphics[width=\linewidth,height=0.20\linewidth,keepaspectratio]{09_lineal_tendencia.png}
+			\end{center}
+			\vspace{-2mm}
+			{\footnotesize\textit{Tendencia irregular, ca\'ida en 2020}}
+			\vspace{1mm}
+			\begin{lstlisting}[language=Python]
+				df.groupby('ANO').size().plot(kind='line', marker='o',
+				linewidth=2, color='#559f88', markersize=8)
+				plt.title('Tendencia de Diplomas por Anio')
+				plt.grid(True, alpha=0.3)
+				plt.savefig('09_lineal_tendencia.png', dpi=300)
+			\end{lstlisting}
+		\end{cajagrafico}
+		
+		% 10. RADAR
+		\begin{cajagrafico}[title=10. Gr\'afico de Ara\~na (Radar)]
+			\textbf{Definici\'on:} Gr\'afico circular con ejes radiales.\\
+			\textbf{Cu\'ando usar:} Comparar m\'ultiples variables simult\'aneamente.\\
+			\textbf{Ejemplo:} Distribuci\'on de diplomas por \'area de conocimiento
+			\vspace{-1mm}
+			\begin{center}
+				\includegraphics[width=0.75\linewidth,height=0.20\linewidth,keepaspectratio]{10_radar_areas.png}
+			\end{center}
+			\vspace{-2mm}
+			{\footnotesize\textit{Educaci\'on lidera con $>$80,000 diplomas}}
+			\vspace{1mm}
+			\begin{lstlisting}[language=Python]
+				areas = df['AREA_CONOCIMIENTO'].value_counts().head(6)
+				angles = np.linspace(0, 2*np.pi, len(areas), endpoint=False).tolist()
+				fig, ax = plt.subplots(subplot_kw={'projection':'polar'})
+				ax.plot(angles, values, 'o-', linewidth=2, color='#0c232f')
+				ax.fill(angles, values, alpha=0.25, color='#559f9f')
+				plt.savefig('10_radar_areas.png', dpi=300)
+			\end{lstlisting}
+		\end{cajagrafico}
+		
+	\end{multicols}
+	
+\end{document}
